@@ -1,0 +1,16 @@
+{
+    "name": "Wikipedia Racer",
+    "description": "Main Client for Wikipedia Racer",
+    "version": "1.0",
+    "manifest_version": 3,
+    "author": "Miki",
+    "browser_action": {
+		"default_icon": "icon.png",
+		"default_title": "Just observing your current url."
+	},
+    "permissions": ["tabs", "activeTab", "http://127.0.0.1:5000/*", "storage"],
+    "background": {
+		"scripts": ["background.js"],
+		"persistent": false
+	}
+  }
