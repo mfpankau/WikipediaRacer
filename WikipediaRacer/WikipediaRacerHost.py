@@ -8,32 +8,36 @@ websitesViewed = {}
 
 def addNewWebsite(player, url):
     if player in players:
-        if not websitesViewed[len(websitesViewed[player]) - 1] == url:
+        if not websitesViewed[player][len(websitesViewed[player]) - 1] == url:
             websitesViewed[player].append(url)
+            print(player, 'has visited site', url)
+    print('at least i ran')
 
 
 @app.route('/addPlayer', methods=['POST'])
 def addPlayer():
-    params = request.get_data().decode()
-    player = params.replace('player=', '')
+    player = request.args.get('player')
+    #player = params['player']
     if player not in players:
         players.append(player)
-    pass
+        print('new player joined: ', player)
+    return ''
 
 @app.route('/removePlayer', methods=['POST'])
 def removePlayer():
-    params = request.get_data().decode()
-    player = params.replace('player=', '')
+    player = request.args.get('player')
     if player in players:
         players.remove(player)
-    pass
+        print('player left: ', player)
+    return ''
 
-@app.route('sendUrl', methods=['POST'])
+@app.route('/sendUrl', methods=['POST'])
 def addUrl():
-    params = request.get_json()
-    url = params['url']
-    player = params['player']
+    #params = request.get_json()
+    url = request.args.get('url')
+    player = request.args.get('player')
     addNewWebsite(player=player, url=url)
+    return ''
 
 
 
