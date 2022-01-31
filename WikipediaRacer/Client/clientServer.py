@@ -50,3 +50,7 @@ def acceptUrl():
         if r.status_code == 200:
             print('yea it worked pog')
     return ''
+
+
+if __name__ == '__main__':
+    start()

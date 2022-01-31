@@ -1,7 +1,49 @@
-from tkinter import * 
+from tkinter import *
+import requests
+from os import system
+import threading
+from time import sleep
 
-def getData():
-    pass
+serverUp = False
+connected = False
+
+ip = ''
+username = ''
+
+def server():
+    global serverUp
+    f = open('test.txt', 'a')
+    f.write('weed')
+    f.close()
+    serverUp = True
+    system('py clientServer.py')
+
+
+def attemptConnect(num):
+    global connected
+    if(num > 5):
+        return 'didnt work'
+    r = requests.post('http://127.0.0.1:5000/setHostIP', params={'ip':ip})
+    if(r.status_code == 200):
+        r = requests.post('http://127.0.0.1:5000/playerName', params={'player':username})
+        if(r.status_code == 200):
+            connected = True
+    else: attemptConnect(num + 1)
+
+
+def startServer():
+    global ip, username, serverUp
+    if not serverUp:
+        x = threading.Thread(target=server, daemon=True)
+        x.start()
+    sleep(1)
+    ip = hostEntry.get()
+    username = nameEntry.get()
+    
+    attemptConnect(0)
+
+
+
 #not my code, but I changed it a bit :D
 class EntryWithPlaceholder(Entry):
     def __init__(self, master=None, placeholder="PLACEHOLDER", color='grey'):
@@ -42,7 +84,9 @@ funnyLabel = Label(topFrame, text='Wikipedia Racer', font=14)
 funnyLabel.pack(pady=10)
 nameEntry = EntryWithPlaceholder(middleFrame, placeholder='Username')
 nameEntry.pack()
-input = Button(middleFrame,text="Exit")
+hostEntry = EntryWithPlaceholder(middleFrame, placeholder='Host')
+hostEntry.pack()
+input = Button(middleFrame,text="Connect", command=startServer)
 input.pack(side=BOTTOM)
 root.update()
 
