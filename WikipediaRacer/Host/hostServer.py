@@ -23,6 +23,9 @@ def addNewWebsite(player, url):
             print(player, 'has visited site', url)
     print('at least i ran')
 
+@app.route('/whoAmI', methods=['GET'])
+def whoAmI():
+    return 'connected'
 
 @app.route('/addPlayer', methods=['POST'])
 def addPlayer():

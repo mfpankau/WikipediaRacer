@@ -30,6 +30,14 @@ def setHostIP():
     hostIP = request.args.get('ip')
     return ''
 
+@app.route('/isConnected', methods=['GET'])
+def isConnected():
+    if hostIP == '':
+        return ''
+    r = requests.get('http://' + hostIP + '/whoAmI')
+    if r.content == 'conencted': return hostIP
+    else: return ''
+
 
 @app.route('/connect', methods=['POST'])
 def connectToHost():

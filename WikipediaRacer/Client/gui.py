@@ -3,22 +3,21 @@ import requests
 from os import system
 import threading
 from time import sleep
+from PIL import Image, ImageTk
 
-serverUp = False
-connected = False
+serverUp = False    #is hosting client server
+connected = False   #is connected to host server
 
 ip = ''
 username = ''
 
-def server():
+#runs on seperate thread to start client server
+def server(): 
     global serverUp
-    f = open('test.txt', 'a')
-    f.write('weed')
-    f.close()
     serverUp = True
     system('py clientServer.py')
 
-
+#send player name and host ip to client server
 def attemptConnect(num):
     global connected
     if(num > 5):
@@ -30,7 +29,13 @@ def attemptConnect(num):
             connected = True
     else: attemptConnect(num + 1)
 
+#update log label with funny text
+def updateLog(str):
+    global logText
+    logText.config(text=str)
+    print('weed updateLog')
 
+#start client server
 def startServer():
     global ip, username, serverUp
     if not serverUp:
@@ -39,10 +44,12 @@ def startServer():
     sleep(1)
     ip = hostEntry.get()
     username = nameEntry.get()
-    
     attemptConnect(0)
+    if connected: updateLog(f'Connected to {ip}\nName set to {username}\n')
 
-
+#mhm... idk starts host or smthn
+def startHost():
+    pass
 
 #not my code, but I changed it a bit :D
 class EntryWithPlaceholder(Entry):
@@ -73,21 +80,34 @@ class EntryWithPlaceholder(Entry):
 
 root = Tk()
 root.geometry('400x300')
+root.title('Wikipedia Racer')
 #making frames
-topFrame = Frame(root,width=400, height=100)
+topFrame = Frame(root,width=400)
 topFrame.pack(side=TOP)
 middleFrame = Frame(root)
 middleFrame.pack()
+bottomFrame = Frame(root)
+bottomFrame.pack(pady=10)
 
 #making elements
+logo = Image.open('wikiRaceIcon.jpg')
+logo = logo.resize((80, 100))
+logo = ImageTk.PhotoImage(logo) 
+funnyLogo = Label(topFrame, image=logo)
+funnyLogo.pack(pady=5)
+root.iconphoto(True, PhotoImage(file='wikiLogo.png')) 
 funnyLabel = Label(topFrame, text='Wikipedia Racer', font=14)
 funnyLabel.pack(pady=10)
 nameEntry = EntryWithPlaceholder(middleFrame, placeholder='Username')
 nameEntry.pack()
 hostEntry = EntryWithPlaceholder(middleFrame, placeholder='Host')
 hostEntry.pack()
-input = Button(middleFrame,text="Connect", command=startServer)
-input.pack(side=BOTTOM)
+connectButton = Button(middleFrame,text="Connect", command=startServer, relief='groove')
+connectButton.pack(side=LEFT, pady=10)
+hostButton = Button(middleFrame, text='Host Lobby', command=startHost, relief='groove')
+hostButton.pack(side=LEFT, pady=10)
+logText = Label(bottomFrame, text='')
+logText.pack(side=TOP, pady=7)
 root.update()
 
 root.mainloop()
