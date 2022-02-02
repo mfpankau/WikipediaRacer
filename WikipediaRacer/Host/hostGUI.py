@@ -1,4 +1,10 @@
 from tkinter import *
+import requests
+import json
+
+def getIP():
+    r = requests.get('https://ip.seeip.org/jsonip?')
+    ipLabel.config(text='Your ip is: ' + str(r.json()['ip']))
 
 
 #not my code, but I changed it a bit :D
@@ -44,6 +50,7 @@ middleFrame.pack(side=TOP)
 
 #elements
 ipLabel = Label(middleFrame, text='Your ip is: ')
+getIP()
 postEntry = EntryWithPlaceholder(middleFrame, placeholder='Port')
 ipLabel.pack()
 postEntry.pack()
